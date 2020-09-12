@@ -1,0 +1,42 @@
+/* 
+ * Theorems 2 and 3:
+ *
+ * Consider points A, B, C, D, E, F in the plane. Let A', B', C', D', E', F'
+ * be the reflections of A, B, C, D, E, F across EF, FD, DE, BC, CA, AB,
+ * respectively.
+ *
+ * The sum of the areas of ABC and A'B'C' equals the sum of the areas of DEF
+ * and D'E'F' if A, B, C, D, E, F are involutoric or concyclic.
+ */
+
+load("geometry.mac");
+
+/* Declare A, B, C, D, E, F. */
+declare([a, b, c, d, e, f], complex);
+
+/* A' is the reflection of A over EF; the rest are similar. */
+a_ : reflect(e, f, a);
+b_ : reflect(f, d, b);
+c_ : reflect(d, e, c);
+d_ : reflect(b, c, d);
+e_ : reflect(c, a, e);
+f_ : reflect(a, b, f);
+
+/* Goal: area ABC + area A'B'C' = area DEF + area D'E'F'. */
+goal: (area(a, b, c) + area(a_, b_, c_)) - (area(d, e, f) + area(d_, e_, f_));
+
+/* Prove for the three cases of involution (Theorem 2). */
+prove(psubst([d =   a, e =   b, f =   c], goal));
+prove(psubst([d =  -a, e =  -b, f =  -c], goal));
+prove(psubst([d = 1/a, e = 1/b, f = 1/c], goal));
+
+/* Prove for the case where A, B, C, D, E, F are concyclic (Theorem 3). */
+prove(psubst([conjugate(a) = 1/a,
+              conjugate(b) = 1/b,
+              conjugate(c) = 1/c,
+              conjugate(d) = 1/d,
+              conjugate(e) = 1/e,
+              conjugate(f) = 1/f],
+             goal));
+
+quit();

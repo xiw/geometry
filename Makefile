@@ -1,4 +1,4 @@
-MACS := $(wildcard imo2019/*.mac)
+MACS := $(wildcard imo2019/*.mac napoleon/*.mac)
 
 V := @
 Q := $(V:1=)

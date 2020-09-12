@@ -1,0 +1,446 @@
+/*
+ * Theorem 4:
+ *
+ * Consider distinct points A, B, C, D, E, F. Let A₁, B₁, C₁, D₁, E₁, F₁ be
+ * the feet of the altitudes from A, B, C, D, E, F to EF, FD, DE, BC, CA, AB,
+ * respectively.
+ *
+ * The opposite sides of hexagon A₁F₁B₁D₁C₁E₁ are parallel if and only if
+ * A, B, C, D, E, F are either involutoric or concyclic.
+ */
+
+load("geometry.mac");
+
+/* Declare A, B, C, D, E, F. */
+declare([a, b, c, d, e, f], complex);
+
+/* Compute the foot of the altitude from Z to XY. */
+foot(x, y, z) :=
+  (z + reflect(x, y, z)) / 2;
+
+/* Compute all the feet of the altitudes. */
+a1 : foot(e, f, a);
+b1 : foot(f, d, b);
+c1 : foot(d, e, c);
+d1 : foot(b, c, d);
+e1 : foot(c, a, e);
+f1 : foot(a, b, f);
+
+/* The opposite sides of hexagon A₁F₁B₁D₁C₁E₁ are parallel. */
+h1 : parallel(a1, f1, d1, c1);
+h2 : parallel(f1, b1, c1, e1);
+h3 : parallel(b1, d1, e1, a1);
+
+
+/* Prove sufficient condition. */
+
+/* A, B, C, D, E, F are involutoric. */
+prove(psubst([d =   a, e =   b, f =   c], [h1, h2, h3]));
+prove(psubst([d =  -a, e =  -b, f =  -c], [h1, h2, h3]));
+prove(psubst([d = 1/a, e = 1/b, f = 1/c], [h1, h2, h3]));
+
+/* A, B, C, D, E, F are concyclic. */
+prove(psubst([conjugate(a) = 1/a,
+              conjugate(b) = 1/b,
+              conjugate(c) = 1/c,
+              conjugate(d) = 1/d,
+              conjugate(e) = 1/e,
+              conjugate(f) = 1/f],
+             [h1, h2, h3]));
+
+
+/* Prove necessary condition. */
+
+/* Extract non-degenerate cases p₁, p₂, p₃ from parallel sides. */
+
+p1 : -(b*conjugate(c)*d*conjugate(e)*f*conjugate(f)
+ - a*conjugate(c)*d*conjugate(e)*f*conjugate(f)
+ - b*conjugate(b)*d*conjugate(e)*f*conjugate(f)
+ + a*conjugate(b)*d*conjugate(e)*f*conjugate(f)
+ - b*c*conjugate(c)*conjugate(e)*f*conjugate(f)
+ + a*c*conjugate(c)*conjugate(e)*f*conjugate(f)
+ + b*conjugate(b)*c*conjugate(e)*f*conjugate(f)
+ - a*conjugate(b)*c*conjugate(e)*f*conjugate(f)
+ - conjugate(b)*c*conjugate(d)*e*f*conjugate(f)
+ + conjugate(a)*c*conjugate(d)*e*f*conjugate(f)
+ + b*conjugate(b)*conjugate(d)*e*f*conjugate(f)
+ - conjugate(a)*b*conjugate(d)*e*f*conjugate(f)
+ + conjugate(b)*c*conjugate(c)*e*f*conjugate(f)
+ - conjugate(a)*c*conjugate(c)*e*f*conjugate(f)
+ - b*conjugate(b)*conjugate(c)*e*f*conjugate(f)
+ + conjugate(a)*b*conjugate(c)*e*f*conjugate(f)
+ - b*conjugate(c)*d*conjugate(d)*f*conjugate(f)
+ + a*conjugate(c)*d*conjugate(d)*f*conjugate(f)
+ + conjugate(b)*c*d*conjugate(d)*f*conjugate(f)
+ - conjugate(a)*c*d*conjugate(d)*f*conjugate(f)
+ - a*conjugate(b)*d*conjugate(d)*f*conjugate(f)
+ + conjugate(a)*b*d*conjugate(d)*f*conjugate(f)
+ + b*c*conjugate(c)*conjugate(d)*f*conjugate(f)
+ - a*c*conjugate(c)*conjugate(d)*f*conjugate(f)
+ - b*conjugate(b)*c*conjugate(d)*f*conjugate(f)
+ + a*conjugate(b)*c*conjugate(d)*f*conjugate(f)
+ - conjugate(b)*c*conjugate(c)*d*f*conjugate(f)
+ + conjugate(a)*c*conjugate(c)*d*f*conjugate(f)
+ + b*conjugate(b)*conjugate(c)*d*f*conjugate(f)
+ - conjugate(a)*b*conjugate(c)*d*f*conjugate(f)
+ - b*conjugate(c)*d*e*conjugate(e)*conjugate(f)
+ + a*conjugate(c)*d*e*conjugate(e)*conjugate(f)
+ + b*conjugate(b)*d*e*conjugate(e)*conjugate(f)
+ - a*conjugate(b)*d*e*conjugate(e)*conjugate(f)
+ + b*c*conjugate(c)*e*conjugate(e)*conjugate(f)
+ - a*c*conjugate(c)*e*conjugate(e)*conjugate(f)
+ - b*conjugate(b)*c*e*conjugate(e)*conjugate(f)
+ + a*conjugate(b)*c*e*conjugate(e)*conjugate(f)
+ + b*conjugate(c)*d*conjugate(d)*e*conjugate(f)
+ - a*conjugate(c)*d*conjugate(d)*e*conjugate(f)
+ - b*conjugate(b)*d*conjugate(d)*e*conjugate(f)
+ + a*conjugate(b)*d*conjugate(d)*e*conjugate(f)
+ - b*c*conjugate(c)*conjugate(d)*e*conjugate(f)
+ + a*c*conjugate(c)*conjugate(d)*e*conjugate(f)
+ + b*conjugate(b)*c*conjugate(d)*e*conjugate(f)
+ - a*conjugate(a)*c*conjugate(d)*e*conjugate(f)
+ - a*b*conjugate(b)*conjugate(d)*e*conjugate(f)
+ + a*conjugate(a)*b*conjugate(d)*e*conjugate(f)
+ - a*conjugate(b)*c*conjugate(c)*e*conjugate(f)
+ + a*conjugate(a)*c*conjugate(c)*e*conjugate(f)
+ + a*b*conjugate(b)*conjugate(c)*e*conjugate(f)
+ - a*conjugate(a)*b*conjugate(c)*e*conjugate(f)
+ - a*conjugate(b)*c*d*conjugate(d)*conjugate(f)
+ + a*conjugate(a)*c*d*conjugate(d)*conjugate(f)
+ + a*b*conjugate(b)*d*conjugate(d)*conjugate(f)
+ - a*conjugate(a)*b*d*conjugate(d)*conjugate(f)
+ + a*conjugate(b)*c*conjugate(c)*d*conjugate(f)
+ - a*conjugate(a)*c*conjugate(c)*d*conjugate(f)
+ - a*b*conjugate(b)*conjugate(c)*d*conjugate(f)
+ + a*conjugate(a)*b*conjugate(c)*d*conjugate(f)
+ + conjugate(b)*c*conjugate(d)*e*conjugate(e)*f
+ - conjugate(a)*c*conjugate(d)*e*conjugate(e)*f
+ - b*conjugate(b)*conjugate(d)*e*conjugate(e)*f
+ + conjugate(a)*b*conjugate(d)*e*conjugate(e)*f
+ - conjugate(b)*c*conjugate(c)*e*conjugate(e)*f
+ + conjugate(a)*c*conjugate(c)*e*conjugate(e)*f
+ + b*conjugate(b)*conjugate(c)*e*conjugate(e)*f
+ - conjugate(a)*b*conjugate(c)*e*conjugate(e)*f
+ - conjugate(b)*c*d*conjugate(d)*conjugate(e)*f
+ + conjugate(a)*c*d*conjugate(d)*conjugate(e)*f
+ + b*conjugate(b)*d*conjugate(d)*conjugate(e)*f
+ - conjugate(a)*b*d*conjugate(d)*conjugate(e)*f
+ + conjugate(b)*c*conjugate(c)*d*conjugate(e)*f
+ - conjugate(a)*c*conjugate(c)*d*conjugate(e)*f
+ - b*conjugate(b)*conjugate(c)*d*conjugate(e)*f
+ + a*conjugate(a)*conjugate(c)*d*conjugate(e)*f
+ + conjugate(a)*b*conjugate(b)*d*conjugate(e)*f
+ - a*conjugate(a)*conjugate(b)*d*conjugate(e)*f
+ + conjugate(a)*b*c*conjugate(c)*conjugate(e)*f
+ - a*conjugate(a)*c*conjugate(c)*conjugate(e)*f
+ - conjugate(a)*b*conjugate(b)*c*conjugate(e)*f
+ + a*conjugate(a)*conjugate(b)*c*conjugate(e)*f
+ + conjugate(a)*b*conjugate(c)*d*conjugate(d)*f
+ - a*conjugate(a)*conjugate(c)*d*conjugate(d)*f
+ - conjugate(a)*b*conjugate(b)*d*conjugate(d)*f
+ + a*conjugate(a)*conjugate(b)*d*conjugate(d)*f
+ - conjugate(a)*b*c*conjugate(c)*conjugate(d)*f
+ + a*conjugate(a)*c*conjugate(c)*conjugate(d)*f
+ + conjugate(a)*b*conjugate(b)*c*conjugate(d)*f
+ - a*conjugate(a)*conjugate(b)*c*conjugate(d)*f
+ - a*conjugate(b)*c*conjugate(d)*e*conjugate(e)
+ + a*conjugate(a)*c*conjugate(d)*e*conjugate(e)
+ + a*b*conjugate(b)*conjugate(d)*e*conjugate(e)
+ - a*conjugate(a)*b*conjugate(d)*e*conjugate(e)
+ + conjugate(a)*b*conjugate(c)*d*e*conjugate(e)
+ - a*conjugate(a)*conjugate(c)*d*e*conjugate(e)
+ - conjugate(a)*b*conjugate(b)*d*e*conjugate(e)
+ + a*conjugate(a)*conjugate(b)*d*e*conjugate(e)
+ + a*conjugate(b)*c*conjugate(c)*e*conjugate(e)
+ - conjugate(a)*b*c*conjugate(c)*e*conjugate(e)
+ - a*b*conjugate(b)*conjugate(c)*e*conjugate(e)
+ + a*conjugate(a)*b*conjugate(c)*e*conjugate(e)
+ + conjugate(a)*b*conjugate(b)*c*e*conjugate(e)
+ - a*conjugate(a)*conjugate(b)*c*e*conjugate(e)
+ + a*conjugate(b)*c*d*conjugate(d)*conjugate(e)
+ - a*conjugate(a)*c*d*conjugate(d)*conjugate(e)
+ - a*b*conjugate(b)*d*conjugate(d)*conjugate(e)
+ + a*conjugate(a)*b*d*conjugate(d)*conjugate(e)
+ - a*conjugate(b)*c*conjugate(c)*d*conjugate(e)
+ + a*conjugate(a)*c*conjugate(c)*d*conjugate(e)
+ + a*b*conjugate(b)*conjugate(c)*d*conjugate(e)
+ - a*conjugate(a)*b*conjugate(c)*d*conjugate(e)
+ - conjugate(a)*b*conjugate(c)*d*conjugate(d)*e
+ + a*conjugate(a)*conjugate(c)*d*conjugate(d)*e
+ + conjugate(a)*b*conjugate(b)*d*conjugate(d)*e
+ - a*conjugate(a)*conjugate(b)*d*conjugate(d)*e
+ + conjugate(a)*b*c*conjugate(c)*conjugate(d)*e
+ - a*conjugate(a)*c*conjugate(c)*conjugate(d)*e
+ - conjugate(a)*b*conjugate(b)*c*conjugate(d)*e
+ + a*conjugate(a)*conjugate(b)*c*conjugate(d)*e)$
+
+p2 : -(b*conjugate(c)*e*conjugate(e)*f*conjugate(f)
+ - a*conjugate(c)*e*conjugate(e)*f*conjugate(f)
+ - conjugate(b)*c*e*conjugate(e)*f*conjugate(f)
+ + conjugate(a)*c*e*conjugate(e)*f*conjugate(f)
+ + a*conjugate(b)*e*conjugate(e)*f*conjugate(f)
+ - conjugate(a)*b*e*conjugate(e)*f*conjugate(f)
+ + conjugate(b)*c*d*conjugate(e)*f*conjugate(f)
+ - conjugate(a)*c*d*conjugate(e)*f*conjugate(f)
+ - a*conjugate(b)*d*conjugate(e)*f*conjugate(f)
+ + a*conjugate(a)*d*conjugate(e)*f*conjugate(f)
+ - b*c*conjugate(c)*conjugate(e)*f*conjugate(f)
+ + a*c*conjugate(c)*conjugate(e)*f*conjugate(f)
+ + conjugate(a)*b*c*conjugate(e)*f*conjugate(f)
+ - a*conjugate(a)*c*conjugate(e)*f*conjugate(f)
+ - b*conjugate(c)*conjugate(d)*e*f*conjugate(f)
+ + a*conjugate(c)*conjugate(d)*e*f*conjugate(f)
+ + conjugate(a)*b*conjugate(d)*e*f*conjugate(f)
+ - a*conjugate(a)*conjugate(d)*e*f*conjugate(f)
+ + conjugate(b)*c*conjugate(c)*e*f*conjugate(f)
+ - conjugate(a)*c*conjugate(c)*e*f*conjugate(f)
+ - a*conjugate(b)*conjugate(c)*e*f*conjugate(f)
+ + a*conjugate(a)*conjugate(c)*e*f*conjugate(f)
+ + b*c*conjugate(c)*conjugate(d)*f*conjugate(f)
+ - a*c*conjugate(c)*conjugate(d)*f*conjugate(f)
+ - conjugate(a)*b*c*conjugate(d)*f*conjugate(f)
+ + a*conjugate(a)*c*conjugate(d)*f*conjugate(f)
+ - conjugate(b)*c*conjugate(c)*d*f*conjugate(f)
+ + conjugate(a)*c*conjugate(c)*d*f*conjugate(f)
+ + a*conjugate(b)*conjugate(c)*d*f*conjugate(f)
+ - a*conjugate(a)*conjugate(c)*d*f*conjugate(f)
+ - b*conjugate(c)*d*e*conjugate(e)*conjugate(f)
+ + a*conjugate(c)*d*e*conjugate(e)*conjugate(f)
+ + conjugate(a)*b*d*e*conjugate(e)*conjugate(f)
+ - a*conjugate(a)*d*e*conjugate(e)*conjugate(f)
+ + b*conjugate(b)*c*e*conjugate(e)*conjugate(f)
+ - conjugate(a)*b*c*e*conjugate(e)*conjugate(f)
+ - a*b*conjugate(b)*e*conjugate(e)*conjugate(f)
+ + a*conjugate(a)*b*e*conjugate(e)*conjugate(f)
+ + b*c*conjugate(c)*d*conjugate(e)*conjugate(f)
+ - a*c*conjugate(c)*d*conjugate(e)*conjugate(f)
+ - b*conjugate(b)*c*d*conjugate(e)*conjugate(f)
+ + a*conjugate(a)*c*d*conjugate(e)*conjugate(f)
+ + a*b*conjugate(b)*d*conjugate(e)*conjugate(f)
+ - a*conjugate(a)*b*d*conjugate(e)*conjugate(f)
+ + b*conjugate(c)*d*conjugate(d)*e*conjugate(f)
+ - a*conjugate(c)*d*conjugate(d)*e*conjugate(f)
+ - conjugate(a)*b*d*conjugate(d)*e*conjugate(f)
+ + a*conjugate(a)*d*conjugate(d)*e*conjugate(f)
+ - b*conjugate(b)*c*conjugate(c)*e*conjugate(f)
+ + conjugate(a)*b*c*conjugate(c)*e*conjugate(f)
+ + a*b*conjugate(b)*conjugate(c)*e*conjugate(f)
+ - a*conjugate(a)*b*conjugate(c)*e*conjugate(f)
+ - b*c*conjugate(c)*d*conjugate(d)*conjugate(f)
+ + a*c*conjugate(c)*d*conjugate(d)*conjugate(f)
+ + conjugate(a)*b*c*d*conjugate(d)*conjugate(f)
+ - a*conjugate(a)*c*d*conjugate(d)*conjugate(f)
+ + b*conjugate(b)*c*conjugate(c)*d*conjugate(f)
+ - conjugate(a)*b*c*conjugate(c)*d*conjugate(f)
+ - a*b*conjugate(b)*conjugate(c)*d*conjugate(f)
+ + a*conjugate(a)*b*conjugate(c)*d*conjugate(f)
+ + conjugate(b)*c*conjugate(d)*e*conjugate(e)*f
+ - conjugate(a)*c*conjugate(d)*e*conjugate(e)*f
+ - a*conjugate(b)*conjugate(d)*e*conjugate(e)*f
+ + a*conjugate(a)*conjugate(d)*e*conjugate(e)*f
+ - b*conjugate(b)*conjugate(c)*e*conjugate(e)*f
+ + a*conjugate(b)*conjugate(c)*e*conjugate(e)*f
+ + conjugate(a)*b*conjugate(b)*e*conjugate(e)*f
+ - a*conjugate(a)*conjugate(b)*e*conjugate(e)*f
+ - conjugate(b)*c*d*conjugate(d)*conjugate(e)*f
+ + conjugate(a)*c*d*conjugate(d)*conjugate(e)*f
+ + a*conjugate(b)*d*conjugate(d)*conjugate(e)*f
+ - a*conjugate(a)*d*conjugate(d)*conjugate(e)*f
+ + b*conjugate(b)*c*conjugate(c)*conjugate(e)*f
+ - a*conjugate(b)*c*conjugate(c)*conjugate(e)*f
+ - conjugate(a)*b*conjugate(b)*c*conjugate(e)*f
+ + a*conjugate(a)*conjugate(b)*c*conjugate(e)*f
+ - conjugate(b)*c*conjugate(c)*conjugate(d)*e*f
+ + conjugate(a)*c*conjugate(c)*conjugate(d)*e*f
+ + b*conjugate(b)*conjugate(c)*conjugate(d)*e*f
+ - a*conjugate(a)*conjugate(c)*conjugate(d)*e*f
+ - conjugate(a)*b*conjugate(b)*conjugate(d)*e*f
+ + a*conjugate(a)*conjugate(b)*conjugate(d)*e*f
+ + conjugate(b)*c*conjugate(c)*d*conjugate(d)*f
+ - conjugate(a)*c*conjugate(c)*d*conjugate(d)*f
+ - a*conjugate(b)*conjugate(c)*d*conjugate(d)*f
+ + a*conjugate(a)*conjugate(c)*d*conjugate(d)*f
+ - b*conjugate(b)*c*conjugate(c)*conjugate(d)*f
+ + a*conjugate(b)*c*conjugate(c)*conjugate(d)*f
+ + conjugate(a)*b*conjugate(b)*c*conjugate(d)*f
+ - a*conjugate(a)*conjugate(b)*c*conjugate(d)*f
+ - b*conjugate(b)*c*conjugate(d)*e*conjugate(e)
+ + conjugate(a)*b*c*conjugate(d)*e*conjugate(e)
+ + a*b*conjugate(b)*conjugate(d)*e*conjugate(e)
+ - a*conjugate(a)*b*conjugate(d)*e*conjugate(e)
+ + b*conjugate(b)*conjugate(c)*d*e*conjugate(e)
+ - a*conjugate(b)*conjugate(c)*d*e*conjugate(e)
+ - conjugate(a)*b*conjugate(b)*d*e*conjugate(e)
+ + a*conjugate(a)*conjugate(b)*d*e*conjugate(e)
+ + b*conjugate(b)*c*d*conjugate(d)*conjugate(e)
+ - conjugate(a)*b*c*d*conjugate(d)*conjugate(e)
+ - a*b*conjugate(b)*d*conjugate(d)*conjugate(e)
+ + a*conjugate(a)*b*d*conjugate(d)*conjugate(e)
+ - b*conjugate(b)*c*conjugate(c)*d*conjugate(e)
+ + a*conjugate(b)*c*conjugate(c)*d*conjugate(e)
+ + conjugate(a)*b*conjugate(b)*c*d*conjugate(e)
+ - a*conjugate(a)*conjugate(b)*c*d*conjugate(e)
+ - b*conjugate(b)*conjugate(c)*d*conjugate(d)*e
+ + a*conjugate(b)*conjugate(c)*d*conjugate(d)*e
+ + conjugate(a)*b*conjugate(b)*d*conjugate(d)*e
+ - a*conjugate(a)*conjugate(b)*d*conjugate(d)*e
+ + b*conjugate(b)*c*conjugate(c)*conjugate(d)*e
+ - conjugate(a)*b*c*conjugate(c)*conjugate(d)*e
+ - a*b*conjugate(b)*conjugate(c)*conjugate(d)*e
+ + a*conjugate(a)*b*conjugate(c)*conjugate(d)*e
+ - a*conjugate(b)*c*conjugate(c)*d*conjugate(d)
+ + conjugate(a)*b*c*conjugate(c)*d*conjugate(d)
+ + a*b*conjugate(b)*conjugate(c)*d*conjugate(d)
+ - a*conjugate(a)*b*conjugate(c)*d*conjugate(d)
+ - conjugate(a)*b*conjugate(b)*c*d*conjugate(d)
+ + a*conjugate(a)*conjugate(b)*c*d*conjugate(d))$
+
+p3 : c*conjugate(c)*d*conjugate(e)*f*conjugate(f)
+ - a*conjugate(c)*d*conjugate(e)*f*conjugate(f)
+ - conjugate(b)*c*d*conjugate(e)*f*conjugate(f)
+ + a*conjugate(b)*d*conjugate(e)*f*conjugate(f)
+ - b*c*conjugate(c)*conjugate(e)*f*conjugate(f)
+ + a*b*conjugate(c)*conjugate(e)*f*conjugate(f)
+ + b*conjugate(b)*c*conjugate(e)*f*conjugate(f)
+ - a*b*conjugate(b)*conjugate(e)*f*conjugate(f)
+ - c*conjugate(c)*conjugate(d)*e*f*conjugate(f)
+ + b*conjugate(c)*conjugate(d)*e*f*conjugate(f)
+ + conjugate(a)*c*conjugate(d)*e*f*conjugate(f)
+ - conjugate(a)*b*conjugate(d)*e*f*conjugate(f)
+ + conjugate(b)*c*conjugate(c)*e*f*conjugate(f)
+ - b*conjugate(b)*conjugate(c)*e*f*conjugate(f)
+ - conjugate(a)*conjugate(b)*c*e*f*conjugate(f)
+ + conjugate(a)*b*conjugate(b)*e*f*conjugate(f)
+ + a*c*conjugate(c)*conjugate(d)*f*conjugate(f)
+ - a*b*conjugate(c)*conjugate(d)*f*conjugate(f)
+ - a*conjugate(a)*c*conjugate(d)*f*conjugate(f)
+ + a*conjugate(a)*b*conjugate(d)*f*conjugate(f)
+ - conjugate(a)*c*conjugate(c)*d*f*conjugate(f)
+ + a*conjugate(a)*conjugate(c)*d*f*conjugate(f)
+ + conjugate(a)*conjugate(b)*c*d*f*conjugate(f)
+ - a*conjugate(a)*conjugate(b)*d*f*conjugate(f)
+ - a*conjugate(b)*c*conjugate(c)*f*conjugate(f)
+ + conjugate(a)*b*c*conjugate(c)*f*conjugate(f)
+ + a*b*conjugate(b)*conjugate(c)*f*conjugate(f)
+ - a*conjugate(a)*b*conjugate(c)*f*conjugate(f)
+ - conjugate(a)*b*conjugate(b)*c*f*conjugate(f)
+ + a*conjugate(a)*conjugate(b)*c*f*conjugate(f)
+ - c*conjugate(c)*d*e*conjugate(e)*conjugate(f)
+ + a*conjugate(c)*d*e*conjugate(e)*conjugate(f)
+ + conjugate(b)*c*d*e*conjugate(e)*conjugate(f)
+ - a*conjugate(b)*d*e*conjugate(e)*conjugate(f)
+ + b*c*conjugate(c)*e*conjugate(e)*conjugate(f)
+ - a*b*conjugate(c)*e*conjugate(e)*conjugate(f)
+ - b*conjugate(b)*c*e*conjugate(e)*conjugate(f)
+ + a*b*conjugate(b)*e*conjugate(e)*conjugate(f)
+ + c*conjugate(c)*d*conjugate(d)*e*conjugate(f)
+ - b*conjugate(c)*d*conjugate(d)*e*conjugate(f)
+ - conjugate(a)*c*d*conjugate(d)*e*conjugate(f)
+ + conjugate(a)*b*d*conjugate(d)*e*conjugate(f)
+ - conjugate(b)*c*conjugate(c)*d*e*conjugate(f)
+ + conjugate(a)*c*conjugate(c)*d*e*conjugate(f)
+ + b*conjugate(b)*conjugate(c)*d*e*conjugate(f)
+ - a*conjugate(a)*conjugate(c)*d*e*conjugate(f)
+ - conjugate(a)*b*conjugate(b)*d*e*conjugate(f)
+ + a*conjugate(a)*conjugate(b)*d*e*conjugate(f)
+ - conjugate(a)*b*c*conjugate(c)*e*conjugate(f)
+ + a*conjugate(a)*b*conjugate(c)*e*conjugate(f)
+ + conjugate(a)*b*conjugate(b)*c*e*conjugate(f)
+ - a*conjugate(a)*b*conjugate(b)*e*conjugate(f)
+ - a*c*conjugate(c)*d*conjugate(d)*conjugate(f)
+ + a*b*conjugate(c)*d*conjugate(d)*conjugate(f)
+ + a*conjugate(a)*c*d*conjugate(d)*conjugate(f)
+ - a*conjugate(a)*b*d*conjugate(d)*conjugate(f)
+ + a*conjugate(b)*c*conjugate(c)*d*conjugate(f)
+ - a*b*conjugate(b)*conjugate(c)*d*conjugate(f)
+ - a*conjugate(a)*conjugate(b)*c*d*conjugate(f)
+ + a*conjugate(a)*b*conjugate(b)*d*conjugate(f)
+ + c*conjugate(c)*conjugate(d)*e*conjugate(e)*f
+ - b*conjugate(c)*conjugate(d)*e*conjugate(e)*f
+ - conjugate(a)*c*conjugate(d)*e*conjugate(e)*f
+ + conjugate(a)*b*conjugate(d)*e*conjugate(e)*f
+ - conjugate(b)*c*conjugate(c)*e*conjugate(e)*f
+ + b*conjugate(b)*conjugate(c)*e*conjugate(e)*f
+ + conjugate(a)*conjugate(b)*c*e*conjugate(e)*f
+ - conjugate(a)*b*conjugate(b)*e*conjugate(e)*f
+ - c*conjugate(c)*d*conjugate(d)*conjugate(e)*f
+ + a*conjugate(c)*d*conjugate(d)*conjugate(e)*f
+ + conjugate(b)*c*d*conjugate(d)*conjugate(e)*f
+ - a*conjugate(b)*d*conjugate(d)*conjugate(e)*f
+ + b*c*conjugate(c)*conjugate(d)*conjugate(e)*f
+ - a*c*conjugate(c)*conjugate(d)*conjugate(e)*f
+ - b*conjugate(b)*c*conjugate(d)*conjugate(e)*f
+ + a*conjugate(a)*c*conjugate(d)*conjugate(e)*f
+ + a*b*conjugate(b)*conjugate(d)*conjugate(e)*f
+ - a*conjugate(a)*b*conjugate(d)*conjugate(e)*f
+ + a*conjugate(b)*c*conjugate(c)*conjugate(e)*f
+ - a*b*conjugate(b)*conjugate(c)*conjugate(e)*f
+ - a*conjugate(a)*conjugate(b)*c*conjugate(e)*f
+ + a*conjugate(a)*b*conjugate(b)*conjugate(e)*f
+ + conjugate(a)*c*conjugate(c)*d*conjugate(d)*f
+ - a*conjugate(a)*conjugate(c)*d*conjugate(d)*f
+ - conjugate(a)*conjugate(b)*c*d*conjugate(d)*f
+ + a*conjugate(a)*conjugate(b)*d*conjugate(d)*f
+ - conjugate(a)*b*c*conjugate(c)*conjugate(d)*f
+ + a*conjugate(a)*b*conjugate(c)*conjugate(d)*f
+ + conjugate(a)*b*conjugate(b)*c*conjugate(d)*f
+ - a*conjugate(a)*b*conjugate(b)*conjugate(d)*f
+ + b*conjugate(c)*d*conjugate(d)*e*conjugate(e)
+ - a*conjugate(c)*d*conjugate(d)*e*conjugate(e)
+ - conjugate(b)*c*d*conjugate(d)*e*conjugate(e)
+ + conjugate(a)*c*d*conjugate(d)*e*conjugate(e)
+ + a*conjugate(b)*d*conjugate(d)*e*conjugate(e)
+ - conjugate(a)*b*d*conjugate(d)*e*conjugate(e)
+ - b*c*conjugate(c)*conjugate(d)*e*conjugate(e)
+ + a*b*conjugate(c)*conjugate(d)*e*conjugate(e)
+ + b*conjugate(b)*c*conjugate(d)*e*conjugate(e)
+ - a*b*conjugate(b)*conjugate(d)*e*conjugate(e)
+ + conjugate(b)*c*conjugate(c)*d*e*conjugate(e)
+ - b*conjugate(b)*conjugate(c)*d*e*conjugate(e)
+ - conjugate(a)*conjugate(b)*c*d*e*conjugate(e)
+ + conjugate(a)*b*conjugate(b)*d*e*conjugate(e)
+ + a*c*conjugate(c)*d*conjugate(d)*conjugate(e)
+ - a*b*conjugate(c)*d*conjugate(d)*conjugate(e)
+ - a*conjugate(a)*c*d*conjugate(d)*conjugate(e)
+ + a*conjugate(a)*b*d*conjugate(d)*conjugate(e)
+ - a*conjugate(b)*c*conjugate(c)*d*conjugate(e)
+ + a*b*conjugate(b)*conjugate(c)*d*conjugate(e)
+ + a*conjugate(a)*conjugate(b)*c*d*conjugate(e)
+ - a*conjugate(a)*b*conjugate(b)*d*conjugate(e)
+ - conjugate(a)*c*conjugate(c)*d*conjugate(d)*e
+ + a*conjugate(a)*conjugate(c)*d*conjugate(d)*e
+ + conjugate(a)*conjugate(b)*c*d*conjugate(d)*e
+ - a*conjugate(a)*conjugate(b)*d*conjugate(d)*e
+ + conjugate(a)*b*c*conjugate(c)*conjugate(d)*e
+ - a*conjugate(a)*b*conjugate(c)*conjugate(d)*e
+ - conjugate(a)*b*conjugate(b)*c*conjugate(d)*e
+ + a*conjugate(a)*b*conjugate(b)*conjugate(d)*e$
+
+/*
+ * Verify that p₁, p₂, p₃ are obtained by removing degenerate
+ * (perpendicular) cases from h₁, h₂, h₃.
+ */
+prove(num(ratsimp(h1)) -
+      p1 * perpendicular(a, b, e, f) * perpendicular(b, c, d, e));
+prove(num(ratsimp(h2)) -
+      p2 * perpendicular(c, a, d, e) * perpendicular(a, b, f, d));
+prove(num(ratsimp(h3)) -
+      p3 * perpendicular(b, c, f, d) * perpendicular(c, a, e, f));
+
+/* Extract non-degenerate cases g₁, g₂, g₃ by elimination. */
+g1 : first(eliminate([p1, p2], [conjugate(d)]))$
+g2 : first(eliminate([p2, p3], [conjugate(f)]))$
+g3 : -first(eliminate([p3, p1], [conjugate(e)]))$
+
+/*
+ * Verify that g₁, g₂, g₃ reduce to either involution or concyclicity,
+ * ignoring degenerate (coincident) cases.
+ */
+prove(g1 - involutoric(a, b, c, d, e, f) * concyclic(a, b, c, f)
+           * (d - e) * conjugate((a - b) * (e - f) * (c - e)));
+prove(g2 - involutoric(a, b, c, d, e, f) * concyclic(a, b, c, e)
+           * (f - d) * conjugate((c - a) * (d - e) * (b - d)));
+prove(g3 - involutoric(a, b, c, d, e, f) * concyclic(a, b, c, d)
+           * (e - f) * conjugate((b - c) * (f - d) * (a - f)));
+
+quit();
