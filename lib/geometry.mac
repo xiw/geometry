@@ -1,0 +1,110 @@
+/* Common variables and functions. */
+
+/* Trap errors into the debugger. */
+debugmode : true;
+
+/* Fail unknown. */
+prederror: true;
+
+/* Assert that equal(e, 0) reduces to true. */
+prove(e) :=
+  apply("and",
+        maplist(lambda([x], if is(equal(x, 0)) then true else error("FALSE")),
+                if listp(e) then e else [e]));
+
+/* Test whether z is pure real. */
+pure_real(z) :=
+  z - conjugate(z);
+
+/* Test whether z is pure imaginary. */
+pure_imag(z) :=
+  z + conjugate(z);
+
+
+/* Points and lines. */
+
+/* Test whether X, Y, Z are collinear. */
+collinear(x, y, z) :=
+  determinant(matrix([x, conjugate(x), 1],
+                     [y, conjugate(y), 1],
+                     [z, conjugate(z), 1]));
+
+/* Compute the intersection of XY and ZW. */
+intersect(x, y, z, w) :=
+  ((conjugate(x) * y - x * conjugate(y)) * (z - w) -
+   (x - y) * (conjugate(z) * w - z * conjugate(w))) /
+  ((conjugate(x) - conjugate(y)) * (z - w) -
+   (x - y) * (conjugate(z) - conjugate(w)));
+
+/* Rotate X about Y by θ. */
+rotate(x, y, theta) :=
+  (x - y) * %e^(%i * theta) + y;
+
+/* Test whether XY and ZW are parallel. */
+parallel(x, y, z, w) :=
+  (x - y) * conjugate(z - w) - conjugate(x - y) * (z - w);
+
+/* Test whether XY and ZW are perpendicular. */
+perpendicular(x, y, z, w) :=
+  (x - y) * conjugate(z - w) + conjugate(x - y) * (z - w);
+
+/* Reflect Z over XY. */
+reflect(x, y, z) :=
+  ((x - y) * conjugate(z) + conjugate(x) * y - x * conjugate(y)) /
+  (conjugate(x) - conjugate(y));
+
+
+/* Triangles. */
+
+/* Compute the signed area of triangle XYZ. */
+area(x, y, z) :=
+  %i/4 * determinant(matrix([x, conjugate(x), 1],
+                            [y, conjugate(y), 1],
+                            [z, conjugate(z), 1]));
+
+/* Compute the centroid of triangle XYZ. */
+centroid(x, y, z) :=
+  (x + y + z) / 3;
+
+/* Compute the circumcenter of triangle XYZ. */
+circumcenter(x, y, z) :=
+  determinant(matrix([x, x * conjugate(x), 1],
+                     [y, y * conjugate(y), 1],
+                     [z, z * conjugate(z), 1])) /
+  determinant(matrix([x, conjugate(x), 1],
+                     [y, conjugate(y), 1],
+                     [z, conjugate(z), 1]));
+
+/* Test whether X₁Y₁, X₂Y₂, X₃Y₃ are concurrent. */
+concurrent(x1, y1, x2, y2, x3, y3) :=
+  determinant(matrix([x1 - y1, conjugate(x1 - y1), conjugate(x1) * y1 - x1 * conjugate(y1)],
+                     [x2 - y2, conjugate(x2 - y2), conjugate(x2) * y2 - x2 * conjugate(y2)],
+                     [x3 - y3, conjugate(x3 - y3), conjugate(x3) * y3 - x3 * conjugate(y3)]));
+
+/* Test whether X, Y, Z, W are concyclic. */
+concyclic(x, y, z, w) :=
+  pure_real((z - x) * (w - y) * conjugate(z - y) * conjugate(w - x));
+
+/* Test whether triangles X₁Y₁Z₁ and X₂Y₂Z₂ are directly similar. */
+directly_similar(x1, y1, z1, x2, y2, z2) :=
+  determinant(matrix([x1, x2, 1],
+                     [y1, y2, 1],
+                     [z1, z2, 1]));
+
+/* Test whether triangle XYZ is equilateral. */
+equilateral(x, y, z) :=
+  determinant(matrix([x, z, 1],
+                     [y, x, 1],
+                     [z, y, 1]));
+
+/* Test whether triangles X₁Y₁Z₁ and X₂Y₂Z₂ are inversely similar. */
+inversely_similar(x1, y1, z1, x2, y2, z2) :=
+  determinant(matrix([x1, conjugate(x2), 1],
+                     [y1, conjugate(y2), 1],
+                     [z1, conjugate(z2), 1]));
+
+/* Test whether X₁, Y₁, Z₁, X₂, Y₂, Z₂ are involutoric. */
+involutoric(x1, y1, z1, x2, y2, z2) :=
+  determinant(matrix([x1 * x2, x1 + x2, 1],
+                     [y1 * y2, y1 + y2, 1],
+                     [z1 * z2, z1 + z2, 1]));
